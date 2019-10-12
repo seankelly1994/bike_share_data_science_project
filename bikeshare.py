@@ -114,38 +114,57 @@ def station_stats(df):
 
 
 def trip_duration_stats(df):
-   # """Displays statistics on the total and average trip duration."""
+    """Displays statistics on the total and average trip duration."""
 
- #   print('\nCalculating Trip Duration...\n')
-  #  start_time = time.time()
+    print('\nCalculating Trip Duration...\n')
+    start_time = time.time()
 
-    # TO DO: display total travel time
+    # Display total travel time
+    total_travel_time = df['Trip Duration'].sum()
+    total_travel_time_days = total_travel_time//86400
+    total_travel_time_hours = (total_travel_time % 86400) //3600
+    total_travel_time_minutes = ((total_travel_time % 86400) % 3600) //60
+    total_travel_time_seconds = (((total_travel_time % 86400) % 3600) % 60)//60
 
-
-    # TO DO: display mean travel time
-
-
-   # print("\nThis took %s seconds." % (time.time() - start_time))
-    #print('-'*40)
-
-
-#def user_stats(df):
- #   """Displays statistics on bikeshare users."""
-
- #   print('\nCalculating User Stats...\n')
-  #  start_time = time.time()
-
-    # TO DO: Display counts of user types
+    print("Total travel time is " + str(total_travel_time_days) + " days " + str(total_travel_time_hours) + " hours " + str(total_travel_time_minutes) + " minutes and " + str(total_travel_time_seconds) + " seconds")
 
 
-    # TO DO: Display counts of gender
+    # Display mean travel time
 
 
-    # TO DO: Display earliest, most recent, and most common year of birth
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('-'*40)
 
 
-   # print("\nThis took %s seconds." % (time.time() - start_time))
-   # print('-'*40)
+def user_stats(df):
+    """Displays statistics on bikeshare users."""
+
+    print('\nCalculating User Stats...\n')
+    start_time = time.time()
+
+    # Display counts of user types
+    user_types = df['User Type'].value_counts()
+    print("User types distribution below")
+    print(str(user_types))
+
+    # Display counts of gender
+    gender_distribution = df['Gender'].value_counts()
+    print("Gender distribution below")
+    print(str(gender_distribution))
+
+    # Display earliest, most recent, and most common year of birth
+    earlist_birth = str(df['Birth Year'].min())
+    earlist_birth = earlist_birth.split('.')
+    recent_birth = str(df['Birth Year'].max())
+    recent_birth = recent_birth.split('.')
+    common_year_birth = str(df['Birth Year'].mode()[0])
+    common_year_birth = common_year_birth.split('.')
+
+    print("Earlist birth Year is " + earlist_birth[0] + " the most recent birth year is " + recent_birth[0] + " and the most common birth year is " + common_year_birth[0])
+
+
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('-'*40)
 
 
 def main():
@@ -154,8 +173,8 @@ def main():
         df = load_data(city, month, day)
         time_stats(df)
         station_stats(df)
-      #  trip_duration_stats(df)
-       # user_stats(df)
+        trip_duration_stats(df)
+        user_stats(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
