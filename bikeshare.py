@@ -2,19 +2,20 @@ import time
 import pandas as pd
 import numpy as np
 
-CITY_DATA = { 'Chicago': './data/chicago.csv',
-              'New York': './data/new_york_city.csv',
-              'Washington': './data/washington.csv' }
+CITY_DATA = { 'chicago': './data/chicago.csv',
+              'new york': './data/new_york_city.csv',
+              'washington': './data/washington.csv' }
 
-city_list = ['Washington', 'New York', 'Chicago']
-month_list = ['January', 'February', 'March', 'April', 'May', 'June']
-day_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'All']
+city_list = ['washington', 'new york', 'chicago']
+month_list = ['january', 'february', 'march', 'april', 'may', 'june']
+day_list = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'all']
 
 def get_filters():
     print('Hello! Let\'s explore some US bikeshare data!')
     print("Your choices are Washington, New York or Chicago")
 
     city = input("Enter the name of the city you would like to explore: ")
+    city = city.lower()
     
     print("Great your chosen city is: " + city)
 
@@ -24,14 +25,22 @@ def get_filters():
 
     # TO DO: get user input for month (all, january, february, ... , june)
     month = input("Enter the month you would like to investigate: ")
+    month = month.lower()
 
     while(month not in month_list or month == ''):
         month = input("Incorrect Entry, please enter the correct month with capital letters: ")
 
     # TO DO: get user input for day of week (all, monday, tuesday, ... sunday)
     day = input("Enter the day would like to investigate: ")
+    day = day.lower()
     while(day not in day_list or day == ''):
         day = input("Incorrect Entry, please enter correct day with capital letters: ")
+        
+
+    #Convert inputs to lower case for the dictionary
+    city = city.lower()
+    month = month.lower()
+    day = day.lower()
 
 
     print('-'*40)
@@ -148,23 +157,36 @@ def user_stats(df):
     print(str(user_types))
 
     # Display counts of gender
-    gender_distribution = df['Gender'].value_counts()
-    print("Gender distribution below")
-    print(str(gender_distribution))
+    try:
+        gender_distribution = df['Gender'].value_counts()
+        print("Gender distribution below")
+        print(str(gender_distribution))
+    except:
+        print("No gender data availble for Washington")
 
-    # Display earliest, most recent, and most common year of birth
-    earlist_birth = str(df['Birth Year'].min())
-    earlist_birth = earlist_birth.split('.')
-    recent_birth = str(df['Birth Year'].max())
-    recent_birth = recent_birth.split('.')
-    common_year_birth = str(df['Birth Year'].mode()[0])
-    common_year_birth = common_year_birth.split('.')
+    # Display earliest, most recent, and most common year of 
+    try:
+        earlist_birth = str(df['Birth Year'].min())
+        earlist_birth = earlist_birth.split('.')
+        recent_birth = str(df['Birth Year'].max())
+        recent_birth = recent_birth.split('.')
+        common_year_birth = str(df['Birth Year'].mode()[0])
+        common_year_birth = common_year_birth.split('.')
 
-    print("Earlist birth Year is " + earlist_birth[0] + " the most recent birth year is " + recent_birth[0] + " and the most common birth year is " + common_year_birth[0])
+        print("Earlist birth Year is " + earlist_birth[0] + " the most recent birth year is " + recent_birth[0] + " and the most common birth year is " + common_year_birth[0])
 
+    except:
+        print("No availible birth data for this data set")
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
+
+def sample_date(df):
+    count = int(input("How many rows would you like to see? "))
+    for d in range(count):
+        print(df.iloc[d])
+    
+    return 'Done'
 
 
 def main():
@@ -175,6 +197,13 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
+
+        #Ask the user if they would like to see some sample data
+        answer = input("Would you like to see some sample data? ")
+        answer = answer.lower()
+
+        if(answer == 'yes'):
+            sample_date(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
